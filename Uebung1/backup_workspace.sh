@@ -3,7 +3,7 @@
 # This was developed on native Ubuntu (no WSL2), so /mnt/d/Workspaces/Ubuntu_Workspace
 # does not exist here. A local directory is used instead.
 
-folderToBackup="$HOME/dev/HSD-BSY/Workspace"
+folderToBackup="$HOME/Workspace"
 finalDestination="$HOME/dev/HSD-BSY/Backup"
 
 if [ "$#" -ne 2 ]; then
