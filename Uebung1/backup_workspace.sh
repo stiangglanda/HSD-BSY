@@ -1,42 +1,37 @@
 #!/bin/bash
 
+# This was developed on native Ubuntu (no WSL2), so /mnt/d/Workspaces/Ubuntu_Workspace
+# does not exist here. A local directory is used instead.
+
 folderToBackup="$HOME/dev/HSD-BSY/Workspace"
 finalDestination="$HOME/dev/HSD-BSY/Backup"
 
-if [ ! -d "$finalDestination" ]; then
-    echo "$finalDestination does not exist" 
-    exit 1
-fi
-
 if [ "$#" -ne 2 ]; then
-    echo "Usage: $0 <destination_folder> <backup_name>"
+    echo "Usage: $0 <backup_directory> <backup_name>" >&2 # >&2 prints to stderr
     exit 1
 fi
-
 if [ ! -d "$1" ]; then
-    echo "$1 does not exist" 
+    echo "Error: backup directory '$1' does not exist" >&2
+    exit 1
+fi
+if [ ! -d "$finalDestination" ]; then
+    echo "Error: target directory '$finalDestination' does not exist" >&2
     exit 1
 fi
 
 timestamp=$(date "+%Y%m%d_%H%M%S")
-ZipLocation="$1/$2_$timestamp.zip"
+zipLocation="$1/$2_$timestamp.zip"
 
 echo "Backing up $folderToBackup to $1"
-
-zip -r "$ZipLocation" "$folderToBackup"
-
-if [ $? -eq 0 ]; then
-    echo "Backup successful: $ZipLocation"
-else
-    echo "Backup failed"
+if ! zip -r "$zipLocation" "$folderToBackup"; then
+    echo "Error: zip failed" >&2
     exit 1
 fi
+echo "backup created: $zipLocation"
+echo "backup saved at: $zipLocation"
 
-mv "$ZipLocation" "$finalDestination"
-
-if [ $? -eq 0 ]; then
-    echo "move successful: $finalDestination"
-else
-    echo "move failed"
+if ! mv "$zipLocation" "$finalDestination/"; then
+    echo "Error: move failed" >&2
     exit 1
 fi
+echo "backup moved to: $finalDestination/$(basename "$zipLocation")"
