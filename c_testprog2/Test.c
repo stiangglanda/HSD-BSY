@@ -1,3 +1,8 @@
+#include "Print.h" // header not included
+#include <stdio.h> // needed for printf
+#include <string.h> // needed for strlen, strcpy, strcat
+#include <stdlib.h> // needed for malloc, free
+
 #define MAX 100
 #define BUFFER_LEN 1024
 
@@ -10,15 +15,14 @@ int TestFormatIO()
    char *pCh = 0;
    double pi = 3.1415;
 
-  
-   int Arr[2][3] = {{1, 2, 3}, {4, 5, 6}};		
-   int h = 0x10;
+   // removed unused Arr
+   // removed unused h
 
    PrintHeader("Test Format IO");
-t
+   // removed t
    i++;
    printf("%d ", i);
-   printf("%x ", (unsigned)&i);
+   printf("%p ", (void*)&i); // added (void*) to avoid warning
 
    printf("Bitte eingeben: ");
    fgets(str,BUFFER_LEN,stdin);
@@ -32,8 +36,8 @@ t
    printf("%d\n", val);
 
    pCh = (char *) &j;
-   printf("%x \n", (unsigned)pCh);	
-   printf("%c \n", *pCh);	
+   printf("%p\n", (void *)pCh); // added (void*) to avoid warning
+   printf("%c \n", *pCh);
 
    printf("PI: %f \n", pi);	
 
@@ -47,7 +51,7 @@ static void Shift(char v[] );
 
 int TestString()
 {
-   char buffer[MAX] = "";  n
+   char buffer[MAX] = "";
    char text[] = "ABC";
 
    PrintHeader("Test Strings");
@@ -66,7 +70,7 @@ int TestString()
 
 
 static void PrintLength(char buf[]) {
-   printf("Length of %s is %d chars\n", buf, strlen(buf));
+   printf("Length of %s is %zu chars\n", buf, strlen(buf)); // changed %d to %zu for size_t
 }
 
 
@@ -133,13 +137,13 @@ int TestArray()
 	
 	memset(&arr,0,sizeof(arr));
 	PrintHeader("initialized array with 0:");
-	PrintIntArr(&arr);
+	PrintIntArr(arr, 10); // needed len
 	
 	memset(&arr,1,sizeof(arr));
 	PrintHeader("initialized array with 1:");
-	PrintIntArr(&arr,10);
+	PrintIntArr(arr, 10);
 	
-	return;
+	return 0; // needed return value
 }
 
 
@@ -177,7 +181,7 @@ static void CallFuncPointer(TFunc func, char* arr[])
 int TestFuncPtr()
 {   
 
-   char* unsorted[] = {(char*)"Hello", (char*)"Martha", (char*)"Anton", (char*)"Berta"};
+   const char* unsorted[] = {(char*)"Hello", (char*)"Martha", (char*)"Anton", (char*)"Berta"};
    
    void (*func) (char arr[]) = PrintLength;
 

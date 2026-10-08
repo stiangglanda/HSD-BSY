@@ -1,8 +1,18 @@
+#include "Print.h" // header not included
+#include <stdio.h> // needed for printf
+#include <string.h> // needed for strlen, strcpy, strcat
+#include <stdlib.h> // needed for malloc, free
+
 static char const* mErrorText[] = {"OK","NOK"};
 
 
 void PrintResult(char const * const text, unsigned const errorCode )
 {
+   if (errorCode > 1) // check if errorCode is valid
+   {
+      printf("Error: Invalid error code %d\n",errorCode);
+      return;
+   }
 
    char* out = (char*)malloc(strlen(text) + strlen(mErrorText[errorCode]) + 2); 
    strcpy(out,text);
