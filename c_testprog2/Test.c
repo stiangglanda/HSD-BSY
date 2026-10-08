@@ -1,10 +1,14 @@
+#include "Test.h" // header not included
 #include "Print.h" // header not included
 #include <stdio.h> // needed for printf
 #include <string.h> // needed for strlen, strcpy, strcat
 #include <stdlib.h> // needed for malloc, free
+#include <assert.h> // needed for assert in module-internal functions
 
 #define MAX 100
 #define BUFFER_LEN 10 // changed to 10 because of str
+#define ARR_LEN 10 // length of the int test array
+#define STR_COUNT 4 // number of strings in TestFuncPtr
 
 
 int TestFormatIO()
@@ -12,7 +16,7 @@ int TestFormatIO()
    int i = 0;
    char str[BUFFER_LEN] = "";  // used the define
    int j = 65;
-   char *pCh = 0;
+   char *pCh = NULL;
    double pi = 3.1415;
 
    // removed unused Arr
@@ -25,14 +29,26 @@ int TestFormatIO()
    printf("%p ", (void*)&i); // added (void*) to avoid warning
 
    printf("Bitte eingeben: ");
-   fgets(str,BUFFER_LEN,stdin);
+   if (fgets(str,BUFFER_LEN,stdin) == NULL) // added check of return value
+   {
+      fprintf(stderr, "Error: reading input failed\n");
+      return TEST_NOK;
+   }
    printf("%s", str);
    printf("\n");
    
-   fgets(str,BUFFER_LEN,stdin);
+   if (fgets(str,BUFFER_LEN,stdin) == NULL) // added check of return value
+   {
+      fprintf(stderr, "Error: reading input failed\n");
+      return TEST_NOK;
+   }
    
    int val = 0;
-   scanf(str, "%4d", &val);
+   if (sscanf(str, "%4d", &val) != 1) // scanf -> sscanf (parse from str), result checked
+   {
+      fprintf(stderr, "Error: no number entered\n");
+      return TEST_NOK;
+   }
    printf("%d\n", val);
 
    pCh = (char *) &j;
@@ -41,11 +57,11 @@ int TestFormatIO()
 
    printf("PI: %f \n", pi);	
 
-   return 0; 
+   return TEST_OK; // constant instead of 0
 }
 
 
-static void PrintLength(char buf[]);
+static void PrintLength(char const buf[]); // const added
 static void Shift(char v[] );
 
 
@@ -65,16 +81,17 @@ int TestString()
    Shift(text);
    printf("Text nachher: %s \n", text);
 
-   return 0;
+   return TEST_OK;
 }
 
 
-static void PrintLength(char buf[]) {
+static void PrintLength(char const buf[]) {
+   assert(buf != NULL); // added assert
    printf("Length of %s is %zu chars\n", buf, strlen(buf)); // changed %d to %zu for size_t
 }
 
-
 static void Shift(char v[]) {
+   assert(v != NULL); // added assert
    unsigned i = 0;
 
    for (i = 0; v[i]!=0; i++) {
@@ -85,23 +102,24 @@ static void Shift(char v[]) {
 
 int TestDynMem()
 {
-   char *Buf = 0;
+   char *Buf = NULL;
 
    PrintHeader("Test dynamic Memory");
 
-   Buf = (char*)malloc(100);
-   if (Buf != 0) {
+   Buf = (char*)malloc(MAX); // magic number replaced
+   if (Buf != NULL) {
       strcpy(Buf, "Hello World!");
       printf(" -> %s \n", Buf);
 
       free (Buf);
+      Buf = NULL; // no dangling pointer
    }
    else
    {
-      printf("Speicher konnte nicht reserviert werden!");
-      return 1;
+      fprintf(stderr, "Speicher konnte nicht reserviert werden!\n"); // stderr and newline added
+      return TEST_NOK;
    }
-   return 0;
+   return TEST_OK;
 }
 
 
@@ -109,9 +127,9 @@ int TestStruct()
 {
    struct Person
    {
-      char name[100];
+      char name[MAX];
       unsigned weight;
-   }max; 
+   };
 
    struct Person moritz;
    
@@ -120,39 +138,43 @@ int TestStruct()
    strcpy(moritz.name,"Moritz Mustermann");
    moritz.weight = 80;
 
-   memset(&max,0,sizeof(struct Person));
+   struct Person max = {
+      .name = "Max Mustermann",
+      .weight = moritz.weight
+   };
 
-   memcpy(max.name,"Max Mustermann",14);
-   max.weight = moritz.weight;
-
-   printf("Person: %s hat %d kg\n",max.name,max.weight);
-   printf("Person: %s hat %d kg\n",moritz.name,moritz.weight);
-   return 0;
+   printf("Person: %s hat %u kg\n",max.name,max.weight); // %u for unsigned
+   printf("Person: %s hat %u kg\n",moritz.name,moritz.weight); // %u for unsigned
+   return TEST_OK;
 }
 
 
 int TestArray()
 {
-	int arr[10];
+	int arr[ARR_LEN];
 	
-	memset(&arr,0,sizeof(arr));
+	memset(arr,0,sizeof(arr)); // arr instead of &arr
 	PrintHeader("initialized array with 0:");
-	PrintIntArr(arr, 10); // needed len
+	PrintIntArr(arr, ARR_LEN); // needed len
 	
-	memset(&arr,1,sizeof(arr));
+	for (unsigned i = 0; i < ARR_LEN; ++i) // replaced memsets
+	{
+		arr[i] = 1;
+	}
 	PrintHeader("initialized array with 1:");
-	PrintIntArr(arr, 10);
+	PrintIntArr(arr, ARR_LEN);
 	
-	return 0; // needed return value
+	return TEST_OK; // needed return value
 }
 
 
-static void PrintBackward(char str[])
+static void PrintBackward(char const str[]) // const added
 {
-	int i=0;
-	int maxInx = strlen(str)-1;
-	for (i=maxInx; i > -1; --i)
+	assert(str != NULL);
+	size_t i = strlen(str); // changed to size_t
+	while (i > 0)
 	{
+		--i;
 		printf("%c",str[i]);
 	}
 	printf("\n");
@@ -161,17 +183,19 @@ static void PrintBackward(char str[])
 
 static int comp (void const * str1, void const * str2)
 {
-   return strcmp(*(char**)str1,*(char**)str2);
+   assert(str1 != NULL && str2 != NULL); // added assert
+   return strcmp(*(char const * const *)str1,*(char const * const *)str2); // added const to cast
 }
 
 
-typedef void (*TFunc) (char arr[]);
+typedef void (*TFunc) (char const arr[]); // added const for PrintLength and PrintBackward
 
 
-static void CallFuncPointer(TFunc func, char* arr[])
+static void CallFuncPointer(TFunc func, char const * const arr[], unsigned const len)
 {
+   assert(func != NULL && arr != NULL); // added assert
    unsigned i=0;
-   for (;i<4;i++)
+   for (;i<len;i++) // used len instead of magic number
    {
       func(arr[i]);
    }
@@ -181,18 +205,18 @@ static void CallFuncPointer(TFunc func, char* arr[])
 int TestFuncPtr()
 {   
 
-   char* unsorted[] = {(char*)"Hello", (char*)"Martha", (char*)"Anton", (char*)"Berta"};
+   char const * unsorted[] = {"Hello", "Martha", "Anton", "Berta"}; // const casts removed
    
-   void (*func) (char arr[]) = PrintLength;
+   TFunc func = PrintLength; // used typedef
 
    PrintHeader("Test Function Pointers");
 
-   qsort(unsorted,4,sizeof(char*),comp);
-   PrintStrArr((char const * const *)unsorted,4);
+   qsort(unsorted,STR_COUNT,sizeof(unsorted[0]),comp);
+   PrintStrArr(unsorted,STR_COUNT); // cast not needed anymore
 
-   CallFuncPointer(PrintBackward,unsorted);
+   CallFuncPointer(PrintBackward,unsorted,STR_COUNT);
 
-   CallFuncPointer(func,unsorted);
+   CallFuncPointer(func,unsorted,STR_COUNT);
    
-   return 0;
+   return TEST_OK;
 }

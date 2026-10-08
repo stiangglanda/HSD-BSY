@@ -1,7 +1,7 @@
 #include "Test.h" // added include
 #include "Print.h" // added include
 
-int main() {   
+int main() {
 
    //Formatierte Ein- und Ausgabe: scanf, printf
    PrintResult("Format IO Test", TestFormatIO());
@@ -21,5 +21,5 @@ int main() {
    //Zeiger auf Funktionen
    PrintResult("FuncPtr Test", TestFuncPtr());
   
-	return 0;
+   return 0;
 }

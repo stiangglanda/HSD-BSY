@@ -1,16 +1,20 @@
 #ifndef TEST_H
 #define TEST_H
 
-extern int TestFormatIO();
+#define TEST_OK  0
+#define TEST_NOK 1
 
-int TestString();
+// All tests return TEST_OK or TEST_NOK
+int TestFormatIO(); // removed extern tests printf, fgets, sscanf 
 
-int TestDynMem();
+int TestString(); // tests string functions
 
-int TestStruct();
+int TestDynMem(); // tests malloc, free
 
-int TestArray();
+int TestStruct(); // tests struct declaration and usage
 
-int TestFuncPtr();
+int TestArray(); // tests array initialization and printing
+
+int TestFuncPtr(); // tests function pointers, qsort
 
 #endif
