@@ -4,13 +4,13 @@
 #include <stdlib.h> // needed for malloc, free
 
 #define MAX 100
-#define BUFFER_LEN 1024
+#define BUFFER_LEN 10 // changed to 10 because of str
 
 
 int TestFormatIO()
 {
    int i = 0;
-   char str[10] = "";  
+   char str[BUFFER_LEN] = "";  // used the define
    int j = 65;
    char *pCh = 0;
    double pi = 3.1415;
@@ -181,14 +181,14 @@ static void CallFuncPointer(TFunc func, char* arr[])
 int TestFuncPtr()
 {   
 
-   const char* unsorted[] = {(char*)"Hello", (char*)"Martha", (char*)"Anton", (char*)"Berta"};
+   char* unsorted[] = {(char*)"Hello", (char*)"Martha", (char*)"Anton", (char*)"Berta"};
    
    void (*func) (char arr[]) = PrintLength;
 
    PrintHeader("Test Function Pointers");
 
    qsort(unsorted,4,sizeof(char*),comp);
-   PrintStrArr(unsorted,4);
+   PrintStrArr((char const * const *)unsorted,4);
 
    CallFuncPointer(PrintBackward,unsorted);
 
