@@ -85,11 +85,13 @@ int TestString()
 }
 
 
+// Prints a string together with its length
 static void PrintLength(char const buf[]) {
    assert(buf != NULL); // added assert
    printf("Length of %s is %zu chars\n", buf, strlen(buf)); // changed %d to %zu for size_t
 }
 
+// Increments every character
 static void Shift(char v[]) {
    assert(v != NULL); // added assert
    unsigned i = 0;
@@ -138,7 +140,7 @@ int TestStruct()
    strcpy(moritz.name,"Moritz Mustermann");
    moritz.weight = 80;
 
-   struct Person max = {
+   struct Person max = { // replaced memset/memcpy by initializer
       .name = "Max Mustermann",
       .weight = moritz.weight
    };
@@ -168,6 +170,7 @@ int TestArray()
 }
 
 
+// Prints a string in reverse order
 static void PrintBackward(char const str[]) // const added
 {
 	assert(str != NULL);
@@ -181,6 +184,7 @@ static void PrintBackward(char const str[]) // const added
 }
 
 
+// compares two strings
 static int comp (void const * str1, void const * str2)
 {
    assert(str1 != NULL && str2 != NULL); // added assert
@@ -191,6 +195,7 @@ static int comp (void const * str1, void const * str2)
 typedef void (*TFunc) (char const arr[]); // added const for PrintLength and PrintBackward
 
 
+// Calls func for the strings in arr
 static void CallFuncPointer(TFunc func, char const * const arr[], unsigned const len)
 {
    assert(func != NULL && arr != NULL); // added assert
