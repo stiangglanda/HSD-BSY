@@ -1,0 +1,19 @@
+# ein erstes makefile
+
+# ein neues Ziel
+test : main.o test1.o test2.o
+	gcc -o test *.o -Wall
+
+# weitere Ziele
+main.o : main.c
+	gcc -c main.c -Wall
+
+test1.o : test1.c
+	gcc -c test1.c -Wall
+
+test2.o : test2.c
+	gcc -c test2.c -Wall
+
+# alles bereinigen
+clean :
+	rm *.o test
