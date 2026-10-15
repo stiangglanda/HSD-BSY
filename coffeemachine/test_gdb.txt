@@ -1,0 +1,204 @@
+Script started on 2026-10-15 15:56:18+02:00 [TERM="xterm-256color" TTY="/dev/pts/1" COLUMNS="185" LINES="31"]
+[1m[7m%[27m[1m[0m                                                                                                                                                                                         ]2;stiangglanda@stiangglanda-IdeaPad:~/dev/HSD-BSY/coffeemachine]1;..coffeemachine]7;file://stiangglanda-IdeaPad/home/stiangglanda/dev/HSD-BSY/coffeemachine\[0m[27m[24m[J[01;32m➜  [36mcoffeemachine[00m [K[?1h=[?2004h[0m[27m[24m[J[01;32m➜  [36mcoffeemachine[00m [01;34mgit:([31mmain[34m) [33m✗[00m [Kggdb ./coffeemachine_debug[25D[7mg[7md[7mb[7m [7m.[7m/[7mc[7mo[7mf[7mf[7me[7me[7mm[7ma[7mc[7mh[7mi[7mn[7me[7m_[7md[7me[7mb[7mu[7mg[27m[25D[27mg[27md[27mb[27m [27m.[27m/[27mc[27mo[27mf[27mf[27me[27me[27mm[27ma[27mc[27mh[27mi[27mn[27me[27m_[27md[27me[27mb[27mu[27mg[?1l>[?2004l
+]2;gdb ./coffeemachine_debug]1;gdb[35;49;1;23;24;27mGNU gdb (Ubuntu 17.1-2ubuntu1) 17.1[m
+Copyright (C) 2025 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <[32;49;22;23;24;27mhttp://gnu.org/licenses/gpl.html[m>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "[39;49;1;23;24;27mshow copying[m" and "[39;49;1;23;24;27mshow warranty[m" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "[39;49;1;23;24;27mshow configuration[m" for configuration details.
+For bug reporting instructions, please see:
+[32;49;22;23;24;27m<https://www.gnu.org/software/gdb/bugs/>[m.
+Find the GDB manual and other documentation resources online at:
+    <[32;49;22;23;24;27mhttp://www.gnu.org/software/gdb/documentation/[m>.
+
+For help, type "[39;49;1;23;24;27mhelp[m".
+Type "[39;49;1;23;24;27mapropos word[m" to search for commands related to "word"...
+Reading symbols from [32;49;22;23;24;27m./coffeemachine_debug[m...
+[?2004h(gdb) [7mset pagination off[27m[C[C[C[C[C[Cset pagination off
+[?2004l[?2004h(gdb) [7mlist main[27m[C[C[C[C[C[Clist main
+[?2004l[39;49;2;23;24;27m2[m	
+[39;49;2;23;24;27m3[m	[34;49;1;23;24;27m#include[m [31;49;22;23;24;27m"coffeemachine_api.h"[m
+[39;49;2;23;24;27m4[m	
+[39;49;2;23;24;27m5[m	[36;49;22;23;24;27m//----------------------------------------------------------------------[m
+[39;49;2;23;24;27m6[m	[32;49;22;23;24;27mint[m [39;49;1;23;24;27mmain[m[31;49;22;23;24;27m()[m
+[39;49;2;23;24;27m7[m	[31;49;22;23;24;27m{[m
+[39;49;2;23;24;27m8[m	  [39;49;1;23;24;27mactivateCoffeeMachine[m[31;49;22;23;24;27m();[m
+[39;49;2;23;24;27m9[m	  [34;49;1;23;24;27mreturn[m [35;49;22;23;24;27m0[m[31;49;22;23;24;27m;[m
+[39;49;2;23;24;27m10[m	[31;49;22;23;24;27m}[m
+[39;49;2;23;24;27m11[m	
+[?2004h(gdb) [7mlist dispatch[27m[C[C[C[C[C[Clist dispatch
+[?2004l[39;49;2;23;24;27m109[m	
+[39;49;2;23;24;27m110[m	[36;49;22;23;24;27m//----------------------------------------------------------------------[m
+[39;49;2;23;24;27m111[m	[36;49;22;23;24;27m// dispatches the keyboard input[m
+[39;49;2;23;24;27m112[m	
+[39;49;2;23;24;27m113[m	[32;49;22;23;24;27mvoid[m [39;49;1;23;24;27mdispatch[m[31;49;22;23;24;27m([m[32;49;22;23;24;27munsigned[m [32;49;22;23;24;27mchar[m kbd_input[31;49;22;23;24;27m)[m
+[39;49;2;23;24;27m114[m	[31;49;22;23;24;27m{[m
+[39;49;2;23;24;27m115[m	  [34;49;1;23;24;27mswitch[m[31;49;22;23;24;27m([mkbd_input[31;49;22;23;24;27m)[m
+[39;49;2;23;24;27m116[m	  [31;49;22;23;24;27m{[m
+[39;49;2;23;24;27m117[m	    [34;49;1;23;24;27mcase[m [31;49;22;23;24;27m'h'[m[31;49;22;23;24;27m:[m
+[39;49;2;23;24;27m118[m	      [39;49;1;23;24;27mdisplayHelp[m[31;49;22;23;24;27m();[m
+[?2004h(gdb) [7mlist keyPressed[27m[C[C[C[C[C[Clist keyPressed
+[?2004l[39;49;2;23;24;27m82[m	  [39;49;1;23;24;27mdisplay[m[31;49;22;23;24;27m([m[31;49;22;23;24;27m"mug removed"[m[31;49;22;23;24;27m);[m
+[39;49;2;23;24;27m83[m	[31;49;22;23;24;27m}[m
+[39;49;2;23;24;27m84[m	
+[39;49;2;23;24;27m85[m	[36;49;22;23;24;27m//----------------------------------------------------------------------[m
+[39;49;2;23;24;27m86[m	[32;49;22;23;24;27mvoid[m [39;49;1;23;24;27mkeyPressed[m[31;49;22;23;24;27m([m[32;49;22;23;24;27munsigned[m [32;49;22;23;24;27mshort[m keymask[31;49;22;23;24;27m)[m
+[39;49;2;23;24;27m87[m	[31;49;22;23;24;27m{[m
+[39;49;2;23;24;27m88[m	  [32;49;22;23;24;27munsigned[m [32;49;22;23;24;27mint[m check_choice [31;49;22;23;24;27m=[m WATER_EMPTY [31;49;22;23;24;27m|[m COFFEE_EMPTY[31;49;22;23;24;27m;[m [36;49;22;23;24;27m// always need water and coffee[m
+[39;49;2;23;24;27m89[m	
+[39;49;2;23;24;27m90[m	  [34;49;1;23;24;27mif[m [31;49;22;23;24;27m([mmachine_status_ [31;49;22;23;24;27m&[m MACHINE_OPENED[31;49;22;23;24;27m)[m
+[39;49;2;23;24;27m91[m	  [31;49;22;23;24;27m{[m
+[?2004h(gdb) [7mbreak main[27m[C[C[C[C[C[Cbreak main
+[?2004lBreakpoint 1 at [34;49;22;23;24;27m0x11d1[m: file [32;49;22;23;24;27mcoffeemachine_main.c[m, line [39;49;2;23;24;27m8[m.
+[?2004h(gdb) [7mbreak dispatch[27m[C[C[C[C[C[Cbreak dispatch
+[?2004lBreakpoint 2 at [34;49;22;23;24;27m0x181c[m: file [32;49;22;23;24;27mcoffeemachine_api.c[m, line [39;49;2;23;24;27m115[m.
+[?2004h(gdb) [7mbreak keyPressed[27m[C[C[C[C[C[Cbreak keyPressed
+[?2004lBreakpoint 3 at [34;49;22;23;24;27m0x140d[m: file [32;49;22;23;24;27mcoffeemachine_functionality.c[m, line [39;49;2;23;24;27m88[m.
+[?2004h(gdb) [7mbreak grindCoffee[27m[C[C[C[C[C[Cbreak grindCoffee
+[?2004lBreakpoint 4 at [34;49;22;23;24;27m0x1638[m: file [32;49;22;23;24;27mcoffeemachine_api.c[m, line [39;49;2;23;24;27m40[m.
+[?2004h(gdb) [7minfo breakpoints[27m[C[C[C[C[C[Cinfo breakpoints
+[?2004l[39;49;1;23;24;27mNum[m     [39;49;1;23;24;27mType[m           [39;49;1;23;24;27mDisp[m [39;49;1;23;24;27mEnb[m [39;49;1;23;24;27mAddress[m            [39;49;1;23;24;27mWhat[m
+1       breakpoint     keep y   [34;49;22;23;24;27m0x00000000000011d1[m in [33;49;22;23;24;27mmain[m at [32;49;22;23;24;27mcoffeemachine_main.c[m:[39;49;2;23;24;27m8[m
+2       breakpoint     keep y   [34;49;22;23;24;27m0x000000000000181c[m in [33;49;22;23;24;27mdispatch[m at [32;49;22;23;24;27mcoffeemachine_api.c[m:[39;49;2;23;24;27m115[m
+3       breakpoint     keep y   [34;49;22;23;24;27m0x000000000000140d[m in [33;49;22;23;24;27mkeyPressed[m at [32;49;22;23;24;27mcoffeemachine_functionality.c[m:[39;49;2;23;24;27m88[m
+4       breakpoint     keep y   [34;49;22;23;24;27m0x0000000000001638[m in [33;49;22;23;24;27mgrindCoffee[m at [32;49;22;23;24;27mcoffeemachine_api.c[m:[39;49;2;23;24;27m40[m
+[?2004h(gdb) [7mrun[27mrun
+[?2004lStarting program: [32;49;22;23;24;27m/home/stiangglanda/dev/HSD-BSY/coffeemachine/coffeemachine_debug[m 
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "[32;49;22;23;24;27m/usr/lib/x86_64-linux-gnu/libthread_db.so.1[m".
+
+Breakpoint 1, [33;49;22;23;24;27mmain[m () at [32;49;22;23;24;27mcoffeemachine_main.c[m:[39;49;2;23;24;27m8[m
+[39;49;2;23;24;27m8[m	  [39;49;1;23;24;27mactivateCoffeeMachine[m[31;49;22;23;24;27m();[m
+[?2004h[?2004l[?2004h(gdb) [7mlist[27mlist
+[?2004l[39;49;2;23;24;27m3[m	[34;49;1;23;24;27m#include[m [31;49;22;23;24;27m"coffeemachine_api.h"[m
+[39;49;2;23;24;27m4[m	
+[39;49;2;23;24;27m5[m	[36;49;22;23;24;27m//----------------------------------------------------------------------[m
+[39;49;2;23;24;27m6[m	[32;49;22;23;24;27mint[m [39;49;1;23;24;27mmain[m[31;49;22;23;24;27m()[m
+[39;49;2;23;24;27m7[m	[31;49;22;23;24;27m{[m
+[39;49;2;23;24;27m8[m	  [39;49;1;23;24;27mactivateCoffeeMachine[m[31;49;22;23;24;27m();[m
+[39;49;2;23;24;27m9[m	  [34;49;1;23;24;27mreturn[m [35;49;22;23;24;27m0[m[31;49;22;23;24;27m;[m
+[39;49;2;23;24;27m10[m	[31;49;22;23;24;27m}[m
+[39;49;2;23;24;27m11[m	
+[?2004h(gdb) [7mstep[27mstep
+[?2004l[33;49;22;23;24;27mactivateCoffeeMachine[m () at [32;49;22;23;24;27mcoffeemachine_api.c[m:[39;49;2;23;24;27m24[m
+[39;49;2;23;24;27m24[m	  [32;49;22;23;24;27munsigned[m [32;49;22;23;24;27mchar[m kbd_input [31;49;22;23;24;27m=[m [31;49;22;23;24;27m'[m[35;49;22;23;24;27m\0[m[31;49;22;23;24;27m'[m[31;49;22;23;24;27m;[m
+[?2004h[?2004l[?2004h(gdb) [7mdisplay kbd_input[27m[C[C[C[C[C[Cdisplay kbd_input
+[?2004l1: kbd_input = 0 '\000'
+[?2004h(gdb) [7mnext[27mnext
+[?2004l[39;49;2;23;24;27m28[m	    [39;49;1;23;24;27mprintf[m[31;49;22;23;24;27m([m[31;49;22;23;24;27m"Coffee Machine> "[m[31;49;22;23;24;27m);[m
+1: kbd_input = 0 '\000'
+[?2004h[?2004l[?2004h(gdb) [7mnext[27mnext
+[?2004l[39;49;2;23;24;27m29[m	    kbd_input [31;49;22;23;24;27m=[m [39;49;1;23;24;27mgetchar[m[31;49;22;23;24;27m();[m
+1: kbd_input = 0 '\000'
+[?2004h[?2004l[?2004h(gdb) [7mnext[27mnext
+[?2004lCoffee Machine> m
+[39;49;2;23;24;27m30[m	    [39;49;1;23;24;27mgetchar[m[31;49;22;23;24;27m();[m [36;49;22;23;24;27m// eat the newline character and ignore it[m
+1: kbd_input = 109 'm'
+[?2004h[?2004l[?2004h(gdb) [7mprint kbd_input[27m[C[C[C[C[C[Cprint kbd_input
+[?2004l[36;49;22;23;24;27m$1[m = 109 'm'
+[?2004h(gdb) [7mnext[27mnext
+[?2004l[39;49;2;23;24;27m31[m	    [39;49;1;23;24;27mdispatch[m[31;49;22;23;24;27m([mkbd_input[31;49;22;23;24;27m);[m
+1: kbd_input = 109 'm'
+[?2004h[?2004l[?2004h(gdb) [7mnext[27mnext
+[?2004l
+Breakpoint 2, [33;49;22;23;24;27mdispatch[m ([36;49;22;23;24;27mkbd_input[m=109 'm') at [32;49;22;23;24;27mcoffeemachine_api.c[m:[39;49;2;23;24;27m115[m
+[39;49;2;23;24;27m115[m	  [34;49;1;23;24;27mswitch[m[31;49;22;23;24;27m([mkbd_input[31;49;22;23;24;27m)[m
+[?2004h[?2004l[?2004h(gdb) [7mstep[27mstep
+[?2004l[39;49;2;23;24;27m139[m	      [34;49;1;23;24;27mif[m [31;49;22;23;24;27m(!([m_status_ [31;49;22;23;24;27m&[m _MUG_INSERTED_[31;49;22;23;24;27m))[m
+[?2004h[?2004l[?2004h(gdb) [7mbacktrace[27m[C[C[C[C[C[Cbacktrace
+[?2004l#0  [33;49;22;23;24;27mdispatch[m ([36;49;22;23;24;27mkbd_input[m=109 'm') at [32;49;22;23;24;27mcoffeemachine_api.c[m:[39;49;2;23;24;27m139[m
+#1  [34;49;22;23;24;27m0x0000555555555626[m in [33;49;22;23;24;27mactivateCoffeeMachine[m () at [32;49;22;23;24;27mcoffeemachine_api.c[m:[39;49;2;23;24;27m31[m
+#2  [34;49;22;23;24;27m0x00005555555551d6[m in [33;49;22;23;24;27mmain[m () at [32;49;22;23;24;27mcoffeemachine_main.c[m:[39;49;2;23;24;27m8[m
+[?2004h(gdb) [7mprint kbd_input[27m[C[C[C[C[C[Cprint kbd_input
+[?2004l[36;49;22;23;24;27m$2[m = 109 'm'
+[?2004h(gdb) [7mprint _status_[27m[C[C[C[C[C[Cprint _status_
+[?2004l[36;49;22;23;24;27m$3[m = 0
+[?2004h(gdb) [7mcontinue[27m[C[C[C[C[C[Ccontinue
+[?2004lContinuing.
+### mug inserted, please choose your coffee
+Coffee Machine> i
+
+Breakpoint 2, [33;49;22;23;24;27mdispatch[m ([36;49;22;23;24;27mkbd_input[m=105 'i') at [32;49;22;23;24;27mcoffeemachine_api.c[m:[39;49;2;23;24;27m115[m
+[39;49;2;23;24;27m115[m	  [34;49;1;23;24;27mswitch[m[31;49;22;23;24;27m([mkbd_input[31;49;22;23;24;27m)[m
+[?2004h[?2004l[?2004h(gdb) [7mnext[27mnext
+[?2004l[39;49;2;23;24;27m135[m	      [39;49;1;23;24;27mcoinInserted[m[31;49;22;23;24;27m([m[35;49;22;23;24;27m1[m[31;49;22;23;24;27m);[m [36;49;22;23;24;27m// I know, the URD says 1, 5 and 10 S coins.. I was just[m
+[?2004h[?2004l[?2004h(gdb) [7mstep[27mstep
+[?2004l[33;49;22;23;24;27mcoinInserted[m ([36;49;22;23;24;27mvalue[m=1) at [32;49;22;23;24;27mcoffeemachine_functionality.c[m:[39;49;2;23;24;27m136[m
+[39;49;2;23;24;27m136[m	  [39;49;1;23;24;27mdisplay[m[31;49;22;23;24;27m([m[31;49;22;23;24;27m"coin inserted"[m[31;49;22;23;24;27m);[m
+[?2004h[?2004l[?2004h(gdb) [7mbacktrace[27m[C[C[C[C[C[Cbacktrace
+[?2004l#0  [33;49;22;23;24;27mcoinInserted[m ([36;49;22;23;24;27mvalue[m=1) at [32;49;22;23;24;27mcoffeemachine_functionality.c[m:[39;49;2;23;24;27m136[m
+#1  [34;49;22;23;24;27m0x000055555555596b[m in [33;49;22;23;24;27mdispatch[m ([36;49;22;23;24;27mkbd_input[m=105 'i') at [32;49;22;23;24;27mcoffeemachine_api.c[m:[39;49;2;23;24;27m135[m
+#2  [34;49;22;23;24;27m0x0000555555555626[m in [33;49;22;23;24;27mactivateCoffeeMachine[m () at [32;49;22;23;24;27mcoffeemachine_api.c[m:[39;49;2;23;24;27m31[m
+#3  [34;49;22;23;24;27m0x00005555555551d6[m in [33;49;22;23;24;27mmain[m () at [32;49;22;23;24;27mcoffeemachine_main.c[m:[39;49;2;23;24;27m8[m
+[?2004h(gdb) V[K[7mfinish[27mfinish
+[?2004lRun till exit from #0  [33;49;22;23;24;27mcoinInserted[m ([36;49;22;23;24;27mvalue[m=1) at [32;49;22;23;24;27mcoffeemachine_functionality.c[m:[39;49;2;23;24;27m136[m
+### coin inserted
+[33;49;22;23;24;27mdispatch[m ([36;49;22;23;24;27mkbd_input[m=105 'i') at [32;49;22;23;24;27mcoffeemachine_api.c[m:[39;49;2;23;24;27m137[m
+[39;49;2;23;24;27m137[m	      [34;49;1;23;24;27mbreak[m[31;49;22;23;24;27m;[m
+[?2004h[?2004l[?2004h(gdb) [7mcontinue[27m[C[C[C[C[C[Ccontinue
+[?2004lContinuing.
+Coffee Machine> 8
+
+Breakpoint 2, [33;49;22;23;24;27mdispatch[m ([36;49;22;23;24;27mkbd_input[m=56 '8') at [32;49;22;23;24;27mcoffeemachine_api.c[m:[39;49;2;23;24;27m115[m
+[39;49;2;23;24;27m115[m	  [34;49;1;23;24;27mswitch[m[31;49;22;23;24;27m([mkbd_input[31;49;22;23;24;27m)[m
+[?2004h[?2004l[?2004h(gdb) [7mcontinue[27m[C[C[C[C[C[Ccontinue
+[?2004lContinuing.
+
+Breakpoint 3, [33;49;22;23;24;27mkeyPressed[m ([36;49;22;23;24;27mkeymask[m=8) at [32;49;22;23;24;27mcoffeemachine_functionality.c[m:[39;49;2;23;24;27m88[m
+[39;49;2;23;24;27m88[m	  [32;49;22;23;24;27munsigned[m [32;49;22;23;24;27mint[m check_choice [31;49;22;23;24;27m=[m WATER_EMPTY [31;49;22;23;24;27m|[m COFFEE_EMPTY[31;49;22;23;24;27m;[m [36;49;22;23;24;27m// always need water and coffee[m
+[?2004h[?2004l[?2004h(gdb) [7mprint keymask[27m[C[C[C[C[C[Cprint keymask
+[?2004l[36;49;22;23;24;27m$4[m = 8
+[?2004h(gdb) [7mprint machine_status_[27m[C[C[C[C[C[Cprint machine_status_
+[?2004l[36;49;22;23;24;27m$5[m = 16
+[?2004h(gdb) [7mprint coins_[27m[C[C[C[C[C[Cprint coins_
+[?2004l[36;49;22;23;24;27m$6[m = 1
+[?2004h(gdb) [7mdisplay machine_status_[27m[C[C[C[C[C[Cdisplay machine_status_
+[?2004l2: machine_status_ = 16
+[?2004h(gdb) next
+[?2004l[39;49;2;23;24;27m90[m	  [34;49;1;23;24;27mif[m [31;49;22;23;24;27m([mmachine_status_ [31;49;22;23;24;27m&[m MACHINE_OPENED[31;49;22;23;24;27m)[m
+2: machine_status_ = 16
+[?2004h[?2004l[?2004h(gdb) next
+[?2004l[39;49;2;23;24;27m96[m	  [34;49;1;23;24;27mif[m [31;49;22;23;24;27m(!([mkeymask [31;49;22;23;24;27m&[m BREW[31;49;22;23;24;27m))[m [36;49;22;23;24;27m// "brew coffee" was not pressed.. ignoring[m
+2: machine_status_ = 16
+[?2004h[?2004l[?2004h(gdb) next
+[?2004l[39;49;2;23;24;27m98[m	  [34;49;1;23;24;27mif[m [31;49;22;23;24;27m([mkeymask [31;49;22;23;24;27m&[m MILK[31;49;22;23;24;27m)[m
+2: machine_status_ = 16
+[?2004h[?2004l[?2004h(gdb) [7mcontinue[27m[C[C[C[C[C[Ccontinue
+[?2004lContinuing.
+
+Breakpoint 4, [33;49;22;23;24;27mgrindCoffee[m ([36;49;22;23;24;27mamount[m=5) at [32;49;22;23;24;27mcoffeemachine_api.c[m:[39;49;2;23;24;27m40[m
+[39;49;2;23;24;27m40[m	    [39;49;1;23;24;27mprintf[m[31;49;22;23;24;27m([m[31;49;22;23;24;27m"***** grinding %u grams of coffee[m[35;49;22;23;24;27m\n[m[31;49;22;23;24;27m"[m[31;49;22;23;24;27m,[mamount[31;49;22;23;24;27m);[m
+2: machine_status_ = 16
+[?2004h[?2004l[?2004h(gdb) [7mprint amount[27m[C[C[C[C[C[Cprint amount
+[?2004l[36;49;22;23;24;27m$7[m = 5
+[?2004h(gdb) [7mprint _coffee_[27m[C[C[C[C[C[Cprint _coffee_
+[?2004l[36;49;22;23;24;27m$8[m = 50
+[?2004h(gdb) [7mbacktrace[27m[C[C[C[C[C[Cbacktrace
+[?2004l#0  [33;49;22;23;24;27mgrindCoffee[m ([36;49;22;23;24;27mamount[m=5) at [32;49;22;23;24;27mcoffeemachine_api.c[m:[39;49;2;23;24;27m40[m
+#1  [34;49;22;23;24;27m0x00005555555554aa[m in [33;49;22;23;24;27mkeyPressed[m ([36;49;22;23;24;27mkeymask[m=8) at [32;49;22;23;24;27mcoffeemachine_functionality.c[m:[39;49;2;23;24;27m114[m
+#2  [34;49;22;23;24;27m0x00005555555559d5[m in [33;49;22;23;24;27mdispatch[m ([36;49;22;23;24;27mkbd_input[m=56 '8') at [32;49;22;23;24;27mcoffeemachine_api.c[m:[39;49;2;23;24;27m161[m
+#3  [34;49;22;23;24;27m0x0000555555555626[m in [33;49;22;23;24;27mactivateCoffeeMachine[m () at [32;49;22;23;24;27mcoffeemachine_api.c[m:[39;49;2;23;24;27m31[m
+#4  [34;49;22;23;24;27m0x00005555555551d6[m in [33;49;22;23;24;27mmain[m () at [32;49;22;23;24;27mcoffeemachine_main.c[m:[39;49;2;23;24;27m8[m
+[?2004h(gdb) [7mdisassemble[27m[C[C[C[C[C[Cdisassemble
+[?2004lDump of assembler code for function [33;49;22;23;24;27mgrindCoffee[m:
+   [34;49;22;23;24;27m0x0000555555555629[m <+0>:	[32;49;22;23;24;27mendbr64[m
+   [34;49;22;23;24;27m0x000055555555562d[m <+4>:	[32;49;22;23;24;27mpush   [m[31;49;22;23;24;27m%rbp[m
+   [34;49;22;23;24;27m0x000055555555562e[m <+5>:	[32;49;22;23;24;27mmov    [m[31;49;22;23;24;27m%rsp[m,[31;49;22;23;24;27m%rbp[m
+   [34;49;22;23;24;27m0x0000555555555631[m <+8>:	[32;49;22;23;24;27msub    [m[34;49;22;23;24;27m$[m[34;49;22;23;24;27m0x10[m,[31;49;22;23;24;27m%rsp[m
+   [34;49;22;23;24;27m0x0000555555555635[m <+12>:	[32;49;22;23;24;27mmov    [m[31;49;22;23;24;27m%edi[m,[34;49;22;23;24;27m-[m[34;49;22;23;24;27m0x4[m([31;49;22;23;24;27m%rbp[m)
+=> [34;49;22;23;24;27m0x0000555555555638[m <+15>:	[32;49;22;23;24;27mmov    [m[34;49;22;23;24;27m-[m[34;49;22;23;24;27m0x4[m([31;49;22;23;24;27m%rbp[m),[31;49;22;23;24;27m%eax[m
+   [34;49;22;23;24;27m0x000055555555563b[m <+18>:	[32;49;22;23;24;27mlea    [m[34;49;22;23;24;27m0xc9e[m([31;49;22;23;24;27m%rip[m),[31;49;22;23;24;27m%rdx[m[37;49;2;23;24;27m        # [m[37;49;2;23;24;27m0x5555555562e0[m
+   [34;49;22;23;24;27m0x0000555555555642[m <+25>:	[32;49;22;23;24;27mmov    [m[31;49;22;23;24;27m%eax[m,[31;49;22;23;24;27m%esi[m
+   [34;49;22;23;24;27m0x0000555555555644[m <+27>:	[32;49;22;23;24;27mmov    [m[31;49;22;23;24;27m%rdx[m,[31;49;22;23;24;27m%rdi[m
+   [34;49;22;23;24;27m0x0000555555555647[m <+30>:	[32;49;22;23;24;27mmov    [m[34;49;22;23;24;27m$[m[34;49;22;23;24;27m0x0[m,[31;49;22;23;24;27m%eax[m
+   [34;49;22;23;24;27m0x000055555555564c[m <+35>:	[32;49;22;23;24;27mcall   [m[34;49;22;23;24;27m0x5555555550b0[m <[33;49;22;23;24;27mprintf@plt[m>
+   [34;49;22;23;24;27m0x0000555555555651[m <+40>:	[32;49;22;23;24;27mmov    [m[34;49;22;23;24;27m0x29bd[m([31;49;22;23;24;27m%rip[m),[31;49;22;23;24;27m%eax[m[37;49;2;23;24;27m        # [m[37;49;2;23;24;27m0x555555558014 <_coffee_>[m
+   [34;49;22;23;24;27m0x0000555555555657[m <+46>:	[32;49;22;23;24;27mcmp    [m[34;49;22;23;24;27m-[m[34;49;22;23;24;27m0x4[m([31;49;22;23;24;27m%rbp[m),[31;49;22;23;24;27m%eax[m
+   [34;49;22;23;24;27m0x000055555555565a[m <+49>:	[32;49;22;23;24;27mjb     [m[34;49;22;23;24;27m0x555555555667[m <[33;49;22;23;24;27mgrindCoffee[m+62>
+   [34;49;22;23;24;27m0x000055555555565c[m <+51>:	[32;49;22;23;24;27mmov    [m[34;49;22;23;24;27m0x29b2[m([31;49;22;23;24;27m%rip[m),[31;49;22;23;24;27m%eax[m[37;49;2;23;24;27m        # [m[37;49;2;23;24;27m0x555555558014 <_coffee_>[m
+   [34;49;22;23;24;27m0x0000555555555662[m <+57>:	[32;49;22;23;24;27msub    [m[34;49;22;23;24;27m-[m[34;49;22;23;24;27m0x4[m([31;49;22;23;24;27m%rbp[m),[31;49;22;23;24;27m%eax[m
+   [34;49;22;23;24;27m0x0000555555555665[m <+60>:	[32;49;22;23;24;27mjmp    [m[34;49;22;23;24;27m0x55555555566c[m <[33;49;22;23;24;27mgrindCoffee[m+67>
+   [34;49;22;23;24;27m0x0000555555555667[m <+62>:	[32;49;22;23;24;27mmov    [m[34;49;22;23;24;27m$[m[34;49;22;23;24;27m0x0[m,[31;49;22;23;24;27m%eax[m
+   [34;49;22;23;24;27m0x000055555555566c[m <+67>:	[32;49;22;23;24;27mmov    [m[
