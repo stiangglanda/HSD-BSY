@@ -1,0 +1,28 @@
+CC       = gcc
+CFLAGS   = -Wall
+OBJECTS  = coffeemachine_main.o coffeemachine_functionality.o coffeemachine_api.o
+DBG_OBJ  = coffeemachine_main_dbg.o coffeemachine_functionality_dbg.o coffeemachine_api_dbg.o
+HEADERS  = coffeemachine_api.h coffeemachine_functionality.h
+
+# Default target
+coffeemachine: $(OBJECTS)
+	$(CC) -o $@ $(OBJECTS)
+
+# Debug target
+coffeemachine_debug: $(DBG_OBJ)
+	$(CC) -g -o $@ $(DBG_OBJ)
+
+# build every .o file from its corresponding .c file and consider the header files as dependencies
+%.o: %.c $(HEADERS)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# some as above but with debug flag
+%_dbg.o: %.c $(HEADERS)
+	$(CC) $(CFLAGS) -g -c $< -o $@
+
+# coffeemachine_debug alias
+debug: coffeemachine_debug
+
+# clean all target
+clean:
+	rm -f $(OBJECTS) $(DBG_OBJ) coffeemachine coffeemachine_debug

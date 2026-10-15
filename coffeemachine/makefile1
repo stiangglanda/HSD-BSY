@@ -1,0 +1,31 @@
+# Default target
+coffeemachine : coffeemachine_main.o coffeemachine_functionality.o coffeemachine_api.o
+	gcc -o coffeemachine coffeemachine_main.o coffeemachine_functionality.o coffeemachine_api.o -Wall
+
+# Default sub-targets
+coffeemachine_main.o : coffeemachine_main.c coffeemachine_api.h
+	gcc -c coffeemachine_main.c -Wall
+
+coffeemachine_functionality.o : coffeemachine_functionality.c coffeemachine_functionality.h
+	gcc -c coffeemachine_functionality.c -Wall
+
+coffeemachine_api.o : coffeemachine_api.c coffeemachine_api.h
+	gcc -c coffeemachine_api.c -Wall
+
+# Debug target
+debug : coffeemachine_main_dbg.o coffeemachine_functionality_dbg.o coffeemachine_api_dbg.o
+	gcc -o coffeemachine_debug coffeemachine_main_dbg.o coffeemachine_functionality_dbg.o coffeemachine_api_dbg.o -Wall -g
+
+# debug sub-targets
+coffeemachine_main_dbg.o : coffeemachine_main.c coffeemachine_api.h
+	gcc -c coffeemachine_main.c -Wall -g -o coffeemachine_main_dbg.o
+
+coffeemachine_functionality_dbg.o : coffeemachine_functionality.c coffeemachine_functionality.h
+	gcc -c coffeemachine_functionality.c -Wall -g -o coffeemachine_functionality_dbg.o
+
+coffeemachine_api_dbg.o : coffeemachine_api.c coffeemachine_api.h
+	gcc -c coffeemachine_api.c -Wall -g -o coffeemachine_api_dbg.o
+
+# clean all target
+clean :
+	rm -f *.o coffeemachine coffeemachine_debug
