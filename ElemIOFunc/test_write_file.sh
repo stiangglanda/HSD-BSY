@@ -1,10 +1,4 @@
 #!/bin/bash
-# Skript um das Programm ./write_file filename zu testen
-
-# Funktion zur Überprüfung des Exit-Status
-# Parameter:
-#   $1 ... tatsächlicher Exit-Status
-#   $2 ... erwartetes Ergebnis (0 = Erfolg, 1 = Fehler)
 
 check_status()
 {
