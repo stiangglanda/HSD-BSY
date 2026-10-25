@@ -1,31 +1,30 @@
 #!/bin/bash
+# Script to test the program ./append source dest
 
+# Function to check the exit status
+# Parameters:
+#   $1 ... actual exit status
+#   $2 ... expected result (0 = success, 1 = error)
 check_status()
 {
     local status=$1
     local expected=$2
 
-    echo "Exit-Status: $status"
+    echo "Exit status: $status"
 
-    if [ "$expected" -eq 0 ]; then
-        if [ "$status" -eq 0 ]; then
-            echo "Test -> OK"
-        else
-            echo "Test -> NOK"
-        fi
+    if [ "$expected" -eq 0 ] && [ "$status" -eq 0 ]; then
+        echo "Test -> OK"
+    elif [ "$expected" -ne 0 ] && [ "$status" -ne 0 ]; then
+        echo "Test -> OK"
     else
-        if [ "$status" -ne 0 ]; then
-            echo "Test -> OK"
-        else
-            echo "Test -> NOK"
-        fi
+        echo "Test -> NOK"
     fi
 }
 
-# Loeschen der generierten Dateien
-rm -f append file1.txt file2.txt non_existing.txt large.bin
+# Delete the generated files
+rm -rf append source.txt dest.txt empty.txt big.txt dir
 
-# Kompilieren des Programms
+# Build the program
 gcc -o append append.c -Wall -Wextra
 
 if [ $? -ne 0 ]; then
@@ -33,48 +32,66 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-echo "Falsche Argumente (zu wenige)"
+# Test the program
+echo "no arguments -> ./append"
 ./append
 check_status $? 1
 
-./append file1.txt
-check_status $? 1
-
 echo
-echo "Falsche Argumente (zu viele)"
+echo "too many arguments -> ./append a b c"
 ./append a b c
 check_status $? 1
 
 echo
-echo "Quelldatei existiert nicht"
-./append non_existing.txt file2.txt
+echo "source file does not exist -> ./append missing.txt dest.txt"
+./append missing.txt dest.txt
 check_status $? 1
 
 echo
-echo "Zieldatei existiert nicht"
-echo "Erste Zeile aus file1" > file1.txt
-./append file1.txt file2.txt
-check_status $? 0
-echo "Inhalt von file2.txt:"
-cat file2.txt
-
-echo
-echo "Zieldatei existiert bereits"
-echo "Zweite Zeile wird angehaengt" > file1.txt
-./append file1.txt file2.txt
-check_status $? 0
-echo "Inhalt von file2.txt nach Append (sollte 2 Zeilen haben):"
-cat file2.txt
-
-echo
-echo "Grosse Datei mit truncate"
-truncate -s 1M large.bin
-./append large.bin file2.txt
+echo "dest.txt does not exist and is created (6 bytes expected):"
+echo "hello" > source.txt
+./append source.txt dest.txt
 check_status $? 0
 
 echo
-echo "Dateigroessen:"
-ls -lh file2.txt large.bin
+echo "append again (dest.txt must have 12 bytes):"
+./append source.txt dest.txt
+check_status $? 0
+wc -c dest.txt
 
-# Aufraeumen
-rm -f file1.txt file2.txt large.bin
+echo
+echo "empty source file (0 bytes expected):"
+truncate -s 0 empty.txt
+./append empty.txt dest.txt
+check_status $? 0
+wc -c dest.txt
+
+echo
+echo "buffer limit, 512 and 513 bytes:"
+truncate -s 512 big.txt
+rm -f dest.txt
+./append big.txt dest.txt
+check_status $? 0
+truncate -s 513 big.txt
+rm -f dest.txt
+./append big.txt dest.txt
+check_status $? 0
+
+echo
+echo "large file, 1 MB:"
+truncate -s 1M big.txt
+rm -f dest.txt
+./append big.txt dest.txt
+check_status $? 0
+wc -c dest.txt
+
+echo
+echo "same file -> ./append source.txt ./source.txt"
+./append source.txt ./source.txt
+check_status $? 1
+
+echo
+echo "destination is a directory -> ./append source.txt dir"
+mkdir dir
+./append source.txt dir
+check_status $? 1
