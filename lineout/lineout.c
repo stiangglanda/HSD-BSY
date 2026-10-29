@@ -37,7 +37,7 @@ static short parseNumber(char const* text, char** rest, long* value)
     return OK;
 }
 
-// parses one part like "3", "4-9", "14-" or "-20" returns NOK if invalid
+// parses part like "3", "4-9", "14-" or "-20" returns NOK if invalid
 static short parseSegment(char const* text, struct Segment* segment)
 {
     assert(text != NULL && segment != NULL);
@@ -80,7 +80,7 @@ static short parseSegments(char const* text, struct Segment* segments,
     assert(text != NULL && segments != NULL && count != NULL);
     *count = 0;
 
-    // strtok changes the text, so we work on a copy
+    // strtok changes the text so we work on a copy
     size_t const len = strlen(text);
     char* copy = malloc(len + 1);
     if (copy == NULL) {
