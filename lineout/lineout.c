@@ -123,6 +123,7 @@ struct Abschnitt {
 };
 
 struct Abschnitt abschnitte[10];
+static size_t abschnitte_index = 0;
 
 void printAbschnitt(struct Abschnitt* abschnitt) {
     if (abschnitt->bis == LONG_MAX) {
@@ -134,7 +135,7 @@ void printAbschnitt(struct Abschnitt* abschnitt) {
     }
 }
 
-void parseSegment(char const* const segment) 
+struct Abschnitt parseSegment(char const* const segment) 
 {
     struct Abschnitt abschnitt;
     char *ende;
@@ -152,6 +153,7 @@ void parseSegment(char const* const segment)
     }
 
     printAbschnitt(&abschnitt);
+    return abschnitt;
 }
 
 void parseSegments(char const* const segments) {
@@ -170,11 +172,37 @@ void parseSegments(char const* const segments) {
     // delimiters present in str[].
     while (token != NULL) {
         printf(" %s\n", token);
-        parseSegment(token);
+        abschnitte[abschnitte_index++]=parseSegment(token);
         token = strtok(NULL, " , ");
     }
 
     free(input);
+}
+
+void printLines(char const* const fileName) {
+    assert(fileName != NULL);
+
+    FILE* file = fopen(fileName, "r");
+    if(file == NULL)
+    {
+        perror(cErrOpen);
+        return;
+    }
+
+    char* zeile = malloc(1024);
+
+    long nr = 0;
+    while (fgets(zeile, sizeof(zeile), file) != NULL) {
+        nr++;
+        for (int i = 0; i < abschnitte_index; i++) {
+            if (nr >= abschnitte[i].von && nr <= abschnitte[i].bis) {
+                printf("%3ld %s", nr, zeile);
+                break;   // Zeile nur einmal ausgeben
+            }
+        }
+    }
+
+    free(zeile);
 }
 
 
@@ -190,6 +218,8 @@ int main(int argc, char** argv)
         fprintf(stderr, "%s\n", cErrUsage);
         return EXIT_FAILURE;
     }
+
+    printLines(argv[2]);
 
 //    //uses the fopen, fclose and fwrite functions
 //    if (WriteABlock(argv[1]) == NOK)
