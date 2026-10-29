@@ -1,126 +1,171 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <memory.h>
 #include <limits.h>
+#include <errno.h>
 #include <assert.h>
 
-//error code
+#define MAX_SEGMENTS 10
+#define LINE_SIZE 1024
+
+// return codes
 static short const OK = 0;
 static short const NOK = 1;
 
-//error and info messages
+// error messages
 static char const* const cErrOpen = "error in fopen";
 static char const* const cErrClose = "error in fclose";
-static char const* const cErrWrite = "error in fwrite";
-static char const* const cErrRead = "error in fgetc";
-static char const* const cErrUsage = "error in commandline -> \
-./readWrite fileName";
-static char const* const cFileEnd = "end of file reached";
+static char const* const cErrMemory = "error allocating memory";
+static char const* const cErrSegment = "invalid segment";
+static char const* const cErrTooMany = "too many segments (max 10)";
+static char const* const cErrUsage = "usage: lineout [segments] fileName";
 
-struct Abschnitt { 
-    long von; 
-    long bis; 
+// one segment of lines
+struct Segment {
+    long start;
+    long end;
 };
 
-struct Abschnitt abschnitte[10];
-static size_t abschnitte_index = 0;
-
-void printAbschnitt(struct Abschnitt* abschnitt) {
-    if (abschnitt->bis == LONG_MAX) {
-        printf("Abschnitt: %ld bis unbegrenzt\n", abschnitt->von);
-    } else if (abschnitt->von == abschnitt->bis) {
-        printf("Abschnitt: %ld\n", abschnitt->von);
-    } else {
-        printf("Abschnitt: %ld bis %ld\n", abschnitt->von, abschnitt->bis);
-    }
-}
-
-struct Abschnitt parseSegment(char const* const segment) 
+// reads a number returns NOK if invalid
+static short parseNumber(char const* text, char** rest, long* value)
 {
-    struct Abschnitt abschnitt;
-    char *ende;
-    if (segment[0] == '-') {              // Form "-20"
-        abschnitt.von = 1;
-        abschnitt.bis = strtol(segment + 1, &ende, 10);
+    errno = 0;
+    *value = strtol(text, rest, 10);
+    if (*rest == text || errno != 0 || *value < 1) {
+        return NOK;
+    }
+    return OK;
+}
+
+// parses one part like "3", "4-9", "14-" or "-20" returns NOK if invalid
+static short parseSegment(char const* text, struct Segment* segment)
+{
+    assert(text != NULL && segment != NULL);
+    char* rest;
+
+    if (text[0] == '-') {                          // form "-20"
+        segment->start = 1;
+        if (parseNumber(text + 1, &rest, &segment->end) != OK) {
+            return NOK;
+        }
     } else {
-        abschnitt.von = strtol(segment, &ende, 10);
-        if (*ende == '\0')             // Form "3"
-            abschnitt.bis = abschnitt.von;
-        else if (*ende == '-' && *(ende + 1) == '\0')   // Form "14-"
-            abschnitt.bis = LONG_MAX;
-        else if (*ende == '-')         // Form "4-9"
-            abschnitt.bis = strtol(ende + 1, &ende, 10);
+        if (parseNumber(text, &rest, &segment->start) != OK) {
+            return NOK;
+        }
+        if (*rest == '\0') {                       // form "3"
+            segment->end = segment->start;
+        } else if (*rest == '-') {
+            rest++;                                // skip the dash
+            if (*rest == '\0') {                   // form "14-"
+                segment->end = LONG_MAX;
+            } else if (parseNumber(rest, &rest, &segment->end) != OK) {
+                return NOK;                        // form "4-9" was invalid
+            }
+        } else {
+            return NOK;                            // invalid
+        }
     }
 
-    printAbschnitt(&abschnitt);
-    return abschnitt;
+    // nothing may follow the last number and start must not be after end
+    if (*rest != '\0' || segment->start > segment->end) {
+        return NOK;
+    }
+    return OK;
 }
 
-void parseSegments(char const* const segments) {
-    size_t const len = strlen(segments);
-    char* input = malloc(len + 1);
-    if (input == NULL) {
-        perror("error allocating memory");
-        return;
+// splits text like "3,4-9,14-" into at most max segments
+static short parseSegments(char const* text, struct Segment* segments,
+                           size_t max, size_t* count)
+{
+    assert(text != NULL && segments != NULL && count != NULL);
+    *count = 0;
+
+    // strtok changes the text, so we work on a copy
+    size_t const len = strlen(text);
+    char* copy = malloc(len + 1);
+    if (copy == NULL) {
+        perror(cErrMemory);
+        return NOK;
     }
-    memcpy(input, segments, len + 1);
+    memcpy(copy, text, len + 1);
 
-    // Returns first token
-    char* token = strtok(input, " , ");
-
-    // Keep printing tokens while one of the
-    // delimiters present in str[].
-    while (token != NULL) {
-        printf(" %s\n", token);
-        abschnitte[abschnitte_index++]=parseSegment(token);
-        token = strtok(NULL, " , ");
+    short result = OK;
+    for (char* token = strtok(copy, ","); token != NULL; token = strtok(NULL, ",")) {
+        if (*count >= max) {
+            fprintf(stderr, "%s\n", cErrTooMany);
+            result = NOK;
+            break;
+        }
+        if (parseSegment(token, &segments[*count]) != OK) {
+            fprintf(stderr, "%s: %s\n", cErrSegment, token);
+            result = NOK;
+            break;
+        }
+        (*count)++;
     }
 
-    free(input);
+    // for example an empty text
+    if (result == OK && *count == 0) {
+        fprintf(stderr, "%s\n", cErrSegment);
+        result = NOK;
+    }
+
+    free(copy);
+    return result;
 }
 
-void printLines(char const* const fileName) {
-    assert(fileName != NULL);
+// prints every line inside a segment, the file is read only once
+static short printLines(char const* fileName, struct Segment const* segments,
+                        size_t count)
+{
+    assert(fileName != NULL && segments != NULL);
 
     FILE* file = fopen(fileName, "r");
-    if(file == NULL)
-    {
+    if (file == NULL) {
         perror(cErrOpen);
-        return;
+        return NOK;
     }
 
-    char* zeile = malloc(1024);
-
-    long nr = 0;
-    while (fgets(zeile, sizeof(zeile), file) != NULL) {
-        nr++;
-        for (int i = 0; i < abschnitte_index; i++) {
-            if (nr >= abschnitte[i].von && nr <= abschnitte[i].bis) {
-                printf("%3ld %s", nr, zeile);
-                break;   // Zeile nur einmal ausgeben
+    char line[LINE_SIZE];                          // array, so sizeof is correct
+    long number = 0;
+    while (fgets(line, sizeof(line), file) != NULL) {
+        number++;
+        for (size_t i = 0; i < count; i++) {
+            if (number >= segments[i].start && number <= segments[i].end) {
+                printf("%3ld %s", number, line);
+                break;                             // print the line only once
             }
         }
     }
 
-    free(zeile);
+    if (fclose(file) != 0) {
+        perror(cErrClose);
+        return NOK;
+    }
+    return OK;
 }
 
-
-//main program
 int main(int argc, char** argv)
 {
-    if(argc == 3) {
-        parseSegments(argv[1]);
-        printf("%s\n", argv[2]);
-    } else if(argc == 2) {
-        printf("%s\n", argv[1]);
+    struct Segment segments[MAX_SEGMENTS];
+    size_t count = 0;
+    char const* fileName;
+
+    if (argc == 3) {
+        if (parseSegments(argv[1], segments, MAX_SEGMENTS, &count) != OK) {
+            return EXIT_FAILURE;
+        }
+        fileName = argv[2];
+    } else if (argc == 2) {
+        // no segments given, so print the whole file
+        segments[0].start = 1;
+        segments[0].end = LONG_MAX;
+        count = 1;
+        fileName = argv[1];
     } else {
         fprintf(stderr, "%s\n", cErrUsage);
         return EXIT_FAILURE;
     }
 
-    printLines(argv[2]);
-
-   return EXIT_SUCCESS;
+    return printLines(fileName, segments, count) == OK ? EXIT_SUCCESS : EXIT_FAILURE;
 }
