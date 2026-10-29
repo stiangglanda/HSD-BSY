@@ -80,7 +80,7 @@ static short parseSegments(char const* text, struct Segment* segments,
     assert(text != NULL && segments != NULL && count != NULL);
     *count = 0;
 
-    // strtok changes the text so we work on a copy
+    // strtok changes the text so we need a copy
     size_t const len = strlen(text);
     char* copy = malloc(len + 1);
     if (copy == NULL) {
@@ -104,7 +104,7 @@ static short parseSegments(char const* text, struct Segment* segments,
         (*count)++;
     }
 
-    // for example an empty text
+    // handle empty text
     if (result == OK && *count == 0) {
         fprintf(stderr, "%s\n", cErrSegment);
         result = NOK;
@@ -126,7 +126,7 @@ static short printLines(char const* fileName, struct Segment const* segments,
         return NOK;
     }
 
-    char line[LINE_SIZE];                          // array, so sizeof is correct
+    char line[LINE_SIZE];
     long number = 0;
     while (fgets(line, sizeof(line), file) != NULL) {
         number++;
@@ -157,7 +157,7 @@ int main(int argc, char** argv)
         }
         fileName = argv[2];
     } else if (argc == 2) {
-        // no segments given, so print the whole file
+        // no segments given print the whole file
         segments[0].start = 1;
         segments[0].end = LONG_MAX;
         count = 1;
