@@ -14,7 +14,7 @@ static char* cErrPrint = "Error in Print(...) -> null pointer in parameter\n";
 
 //texts
 static char const* cWelcome = "CmdHnd: Welcome!\n";
-static char const* cPrompt = ">";
+static char const* cInput = ">";
 
 
 //////////////////////////////
@@ -34,7 +34,7 @@ void Init(TCmdHndTable const cmds[], int (*PutCh)(int))
 
    //greeting and first prompt
    Print(cWelcome);
-   Print(cPrompt);
+   Print(cInput);
 }
 
 //pre declaration
@@ -52,16 +52,17 @@ int Process(char const ch)
    {
       //line is complete -> check it and run the command
       checkInput();
+      Print(gInput);
+      //clear the buffer for the next line and show the prompt
+      gInputLen = 0;
+      gInput[0] = '\0';
+      Print(cInput);
    }
    else if (gInputLen < MAX_INPUTLEN - 1)	//keep one place for '\0'
    {
       //store char in the buffer
       gInput[gInputLen++] = ch;
       gInput[gInputLen] = '\0';
-
-      //echo char over the output function
-      char echo[2] = { ch, '\0' };
-      Print(echo);
    }
    //else: buffer full -> char is ignored
 
@@ -177,9 +178,4 @@ static void checkInput()
    {
       evaluateCmd();
    }
-
-   //clear the buffer for the next line and show the prompt
-   gInputLen = 0;
-   gInput[0] = '\0';
-   Print(cPrompt);
 }
