@@ -21,6 +21,18 @@ static void PrintArgs(char* const* argv, int const argc) {
     fputs(argv[0], stdout);
 }
 
+static void ScanFromStdIn(){
+    char const* cErrMsg = "Error reading ...";
+    size_t const cSize = 5;
+    char buffer[cSize] = {};
+
+    puts("\nread from stdin");
+    int ret = scanf("%s", buffer);
+    buffer[cSize] = '\0';
+    ret == 1 ? puts(buffer) : puts(cErrMsg);
+
+}
+
 int main(int argc, char *argv[]) {
     puts("Hello VS Code!");
     PrintArgs(argv, argc);
