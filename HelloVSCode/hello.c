@@ -21,6 +21,14 @@ static void PrintArgs(char* const* argv, int const argc) {
     fputs(argv[0], stdout);
 }
 
+static void EmptyStdIn(){
+    int ch = EOF;
+    do{
+        ch = getchar();
+    }
+    while(ch != EOF && ch != '\n');
+}
+
 static void ScanFromStdIn(){
     char const* cErrMsg = "Error reading ...";
     size_t const cSize = 5;
@@ -31,6 +39,20 @@ static void ScanFromStdIn(){
     buffer[cSize] = '\0';
     ret == 1 ? puts(buffer) : puts(cErrMsg);
 
+    // noch ein lesevorgang
+    EmptyStdIn();
+
+    int const cLineSize = 20;
+    char line[cLineSize] = {};
+    puts("\nread line from stdin");
+    if(fgets(line, cLineSize, stdin) == NULL){
+        perror("error fgets");
+        return;
+    }
+
+    memset(buffer, 0, cSize);
+    ret = scanf(line, "%4s", buffer);
+    
 }
 
 int main(int argc, char *argv[]) {
