@@ -50,9 +50,10 @@ int Process(char const ch)
 
    if (ch == '\n' || ch == '\r')
    {
+      Print(gInput);
+      
       //line is complete -> check it and run the command
       checkInput();
-      Print(gInput);
       //clear the buffer for the next line and show the prompt
       gInputLen = 0;
       gInput[0] = '\0';

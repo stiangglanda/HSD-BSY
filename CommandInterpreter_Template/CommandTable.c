@@ -19,12 +19,12 @@ static int CmdAddInt();
 
 //CommandTable
 static TCmdHndTable const cmds[] = {
-	{CmdHelp,       "help",  "show help text"},
-	{CmdHelp,       "?",     "show help text"},
-	{CmdParamString,"string","[value] first parameter as string"},
-	{CmdParamInt,   "int" ,  "[value] first parameter as integer"},
-	{CmdParamFloat, "float", "[value] first parameter as float"},
-	{CmdAddInt, "addint", "[value1] [value2] adds two integer values"},
+	{CmdHelp,        "help",   "show help text"},
+	{CmdHelp,        "?",      "show help text"},
+	{CmdParamInt,    "int",    "[value] first parameter as integer"},
+	{CmdParamFloat,  "float",  "[value] first parameter as float"},
+	{CmdParamString, "string", "[value] first parameter as string"},
+	{CmdAddInt,      "addint", "[value1] [value2] adds two integer values"},
 	{0,0,0}  //end criteria
 };
 
