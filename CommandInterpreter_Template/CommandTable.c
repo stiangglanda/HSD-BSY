@@ -47,7 +47,7 @@ static int ToInt(char const* str, int* value)
 	char* end = 0;
 	long long result;
 
-	if (str[0] == '\0')		//parameter is missing
+	if (str[0] == '\0')	//parameter is missing
 	{
 		return 0;
 	}
@@ -116,10 +116,10 @@ static int CmdHelp(){
 
 //interprets 1st parameter as integer and prints it
 static int CmdParamInt(){
-	int ret = NOK;	//return value
+	int ret = NOK;
 	int value = 0;
 	char text[64];
-	TParameters p = GetParams();	//params[0] is the command itself
+	TParameters p = GetParams(); //params[0] is the command itself
 
 	Print("\n");
 	if (ToInt(p.params[1], &value))
@@ -135,7 +135,7 @@ static int CmdParamInt(){
 
 //interprets 1st parameter as float and prints it
 static int CmdParamFloat(){
-	int ret = NOK;  //return value
+	int ret = NOK;
 	double value = 0.0;
 	char text[64];
 	TParameters p = GetParams();
@@ -155,7 +155,7 @@ static int CmdParamFloat(){
 //interprets 1st parameter as string and prints it
 static int CmdParamString()
 {
-	int ret = NOK;	//return value
+	int ret = NOK;
 	TParameters p = GetParams();
 
 	Print("\n");
@@ -174,7 +174,7 @@ static int CmdParamString()
 //adds two integer parameter and prints the result
 static int CmdAddInt()
 {
-	int ret = NOK;  //return value
+	int ret = NOK;
 	int a = 0;
 	int b = 0;
 	char text[96];

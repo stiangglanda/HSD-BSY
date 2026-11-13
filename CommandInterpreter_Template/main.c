@@ -14,8 +14,8 @@ int main(int const argc, char const* const* argv){
 
    //read characters from input
    do {
-      ch = getchar();			//wait for key
-   } while(Process(ch)!= cESC);	//ESC typed?
+      ch = getchar(); //wait for key
+   } while(Process(ch)!= cESC);	//ESC typed
 
 	return EXIT_SUCCESS;
 }
