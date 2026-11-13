@@ -29,5 +29,4 @@ int Process(char const ch);
 //function which writes a string to the given put-char-function
 void Print(char const* str);
 
-
 #endif
