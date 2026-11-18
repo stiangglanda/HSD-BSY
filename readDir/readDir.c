@@ -102,7 +102,7 @@ int main (int argc, char* argv[]) {
    if(getcwd(path, PATH_MAX) != 0)
    {
       puts(path);
-      printf("path_max: %d", PATH_MAX);
+      printf("path_max: %d\n", PATH_MAX);
    }
 
    return EXIT_SUCCESS;
