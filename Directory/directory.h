@@ -1,6 +1,8 @@
 #ifndef DIRECTORY_H
 #define DIRECTORY_H
 
+#include <sys/types.h>
+
 /*
 changes to directory in parameter path
 */
