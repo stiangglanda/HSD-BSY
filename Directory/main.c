@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <limits.h>
 
 static int passed = 0;
 static int failed = 0;
@@ -28,7 +29,7 @@ static int exists(const char* path)
 
 int main(void)
 {
-    char originalDir[4096];
+    char originalDir[PATH_MAX];
     char testDir[] = "directory_tests";
 
     if (getcwd(originalDir, sizeof(originalDir)) == NULL ||
@@ -110,9 +111,17 @@ int main(void)
     umask(oldMask);
 
     // Symbolic link
-    char externalPath[4096];
-    snprintf(externalPath, sizeof(externalPath),
-             "%s/external.txt", originalDir);
+    char externalPath[PATH_MAX + sizeof("/external.txt")];
+    int externalPathLength = snprintf(externalPath, sizeof(externalPath),
+                                      "%s/external.txt", originalDir);
+
+    if (externalPathLength < 0 ||
+        (size_t)externalPathLength >= sizeof(externalPath))
+    {
+        fprintf(stderr, "External path is too long\n");
+        chdir(originalDir);
+        return EXIT_FAILURE;
+    }
 
     fd = open(externalPath, O_CREAT | O_WRONLY | O_TRUNC, 0600);
     if (fd >= 0)
