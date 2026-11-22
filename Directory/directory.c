@@ -17,10 +17,12 @@ static char const* const cErrAddDir    = "error in mkdir";
 static char const* const cErrChangeDir = "error in chdir";
 static char const* const cErrReadDir   = "error in readdir";
 static char const* const cErrCloseDir  = "error in closedir";
+static char const* const cErrLstat     = "error in lstat";
+static char const* const cErrCloseFile = "error in close";
+static char const* const cErrRemoveDir = "error in rmdir";
+static char const* const cErrUnlink    = "error in unlink";
 
-static mode_t cDefaultAccessRights =
-    S_IRUSR | S_IWUSR | S_IXUSR;
-
+static mode_t cDefaultAccessRights = S_IRUSR | S_IWUSR | S_IXUSR;
 
 // Internal recursive functions
 static void print_directory(const char* path, int depth);
@@ -45,7 +47,6 @@ void PrintDir()
 static void print_directory(const char* path, int depth)
 {
     DIR* pDir = opendir(path);
-
     if (pDir == NULL)
     {
         perror(cErrOpenDir);
@@ -89,7 +90,7 @@ static void print_directory(const char* path, int depth)
 
         if (lstat(fullPath, &st) != 0)
         {
-            perror("lstat");
+            perror(cErrLstat);
             continue;
         }
 
@@ -143,7 +144,7 @@ void AddFile(char const* const name)
 
     if (close(fd) != 0)
     {
-        perror("error in close");
+        perror(cErrCloseFile);
     }
 }
 
@@ -157,7 +158,6 @@ void RemoveAll()
 static int remove_directory(const char* path)
 {
     DIR* pDir = opendir(path);
-
     if (pDir == NULL)
     {
         perror(cErrOpenDir);
@@ -204,7 +204,7 @@ static int remove_directory(const char* path)
 
         if (lstat(fullPath, &st) != 0)
         {
-            perror("lstat");
+            perror(cErrLstat);
             result = -1;
             continue;
         }
@@ -219,7 +219,7 @@ static int remove_directory(const char* path)
 
             if (rmdir(fullPath) != 0)
             {
-                perror("rmdir");
+                perror(cErrRemoveDir);
                 result = -1;
             }
         }
@@ -227,7 +227,7 @@ static int remove_directory(const char* path)
         {
             if (unlink(fullPath) != 0)
             {
-                perror("unlink");
+                perror(cErrUnlink);
                 result = -1;
             }
         }
