@@ -1,164 +1,249 @@
+
 #include "directory.h"
 #include <stdio.h>
-#include <sys/stat.h>
 #include <stdlib.h>
 #include <dirent.h>
 #include <errno.h>
 #include <string.h>
 #include <limits.h>
+#include <fcntl.h>
 #include <unistd.h>
+#include <sys/stat.h>
 
-//error messages
-static char const* const cErrOpenDir  = "error in opendir";
-static char const* const cErrAddFile  = "error in fopen";
-static char const* const cErrAddDir   = "error in mkdir";
+// Error messages
+static char const* const cErrOpenDir   = "error in opendir";
+static char const* const cErrAddFile   = "error in open";
+static char const* const cErrAddDir    = "error in mkdir";
 static char const* const cErrChangeDir = "error in chdir";
-static char const* const cErrReadDir  = "error in readdir!";
-static char const* const cErrCloseDir = "error in closedir!";
+static char const* const cErrReadDir   = "error in readdir";
+static char const* const cErrCloseDir  = "error in closedir";
 
-static mode_t cDefaultAccessRights = S_IRUSR | S_IWUSR | S_IXUSR; // Default access rights for new directories and files
+static mode_t cDefaultAccessRights =
+    S_IRUSR | S_IWUSR | S_IXUSR;
 
-static void remove_directory(const char *path)
+
+// Internal recursive functions
+static void print_directory(const char* path, int depth);
+static int remove_directory(const char* path);
+
+
+void ChangeToDir(char const* const path)
 {
-    DIR *dir = opendir(path);
-
-    if (dir == NULL)
+    if (chdir(path) != 0)
     {
-        perror("opendir");
+        perror(cErrChangeDir);
+    }
+}
+
+
+void PrintDir()
+{
+    print_directory(".", 0);
+}
+
+
+static void print_directory(const char* path, int depth)
+{
+    DIR* pDir = opendir(path);
+
+    if (pDir == NULL)
+    {
+        perror(cErrOpenDir);
         return;
     }
 
-    struct dirent *entry;
+    struct dirent* pDirEntry;
 
-    while ((entry = readdir(dir)) != NULL)
+    while (1)
     {
-        // Skip current and parent directory
-        if (strcmp(entry->d_name, ".") == 0 ||
-            strcmp(entry->d_name, "..") == 0)
+        errno = 0;
+        pDirEntry = readdir(pDir);
+
+        if (pDirEntry == NULL)
+        {
+            if (errno != 0)
+            {
+                perror(cErrReadDir);
+            }
+            break;
+        }
+
+        if (strcmp(pDirEntry->d_name, ".") == 0 ||
+            strcmp(pDirEntry->d_name, "..") == 0)
         {
             continue;
         }
 
-        // Construct full path
-        char full_path[PATH_MAX];
+        char fullPath[PATH_MAX];
 
-        snprintf(full_path, sizeof(full_path),
-                 "%s/%s", path, entry->d_name);
+        int length = snprintf(fullPath, sizeof(fullPath),
+                              "%s/%s", path, pDirEntry->d_name);
+
+        if (length < 0 || (size_t)length >= sizeof(fullPath))
+        {
+            fprintf(stderr, "Path too long\n");
+            continue;
+        }
 
         struct stat st;
 
-        if (lstat(full_path, &st) == -1)
+        if (lstat(fullPath, &st) != 0)
         {
             perror("lstat");
             continue;
         }
 
+        for (int i = 0; i < depth; i++)
+        {
+            printf("    ");
+        }
+
         if (S_ISDIR(st.st_mode))
         {
-            // Recursively remove subdirectory
-            remove_directory(full_path);
+            printf("dir:   %s\n", pDirEntry->d_name);
 
-            // Remove now-empty directory
-            if (rmdir(full_path) == -1)
+            print_directory(fullPath, depth + 1);
+        }
+        else if (S_ISREG(st.st_mode))
+        {
+            printf("file:  %s\n", pDirEntry->d_name);
+        }
+        else
+        {
+            printf("other: %s\n", pDirEntry->d_name);
+        }
+    }
+
+    if (closedir(pDir) != 0)
+    {
+        perror(cErrCloseDir);
+    }
+}
+
+
+void AddDir(char const* const name)
+{
+    if (mkdir(name, cDefaultAccessRights) != 0)
+    {
+        perror(cErrAddDir);
+    }
+}
+
+
+void AddFile(char const* const name)
+{
+    int fd = open(name, O_CREAT | O_WRONLY | O_TRUNC,
+                  cDefaultAccessRights);
+
+    if (fd == -1)
+    {
+        perror(cErrAddFile);
+        return;
+    }
+
+    if (close(fd) != 0)
+    {
+        perror("error in close");
+    }
+}
+
+
+void RemoveAll()
+{
+    remove_directory(".");
+}
+
+
+static int remove_directory(const char* path)
+{
+    DIR* pDir = opendir(path);
+
+    if (pDir == NULL)
+    {
+        perror(cErrOpenDir);
+        return -1;
+    }
+
+    int result = 0;
+    struct dirent* pDirEntry;
+
+    while (1)
+    {
+        errno = 0;
+        pDirEntry = readdir(pDir);
+
+        if (pDirEntry == NULL)
+        {
+            if (errno != 0)
+            {
+                perror(cErrReadDir);
+                result = -1;
+            }
+            break;
+        }
+
+        if (strcmp(pDirEntry->d_name, ".") == 0 ||
+            strcmp(pDirEntry->d_name, "..") == 0)
+        {
+            continue;
+        }
+
+        char fullPath[PATH_MAX];
+
+        int length = snprintf(fullPath, sizeof(fullPath),
+                              "%s/%s", path, pDirEntry->d_name);
+
+        if (length < 0 || (size_t)length >= sizeof(fullPath))
+        {
+            fprintf(stderr, "Path too long\n");
+            result = -1;
+            continue;
+        }
+
+        struct stat st;
+
+        if (lstat(fullPath, &st) != 0)
+        {
+            perror("lstat");
+            result = -1;
+            continue;
+        }
+
+        if (S_ISDIR(st.st_mode))
+        {
+            if (remove_directory(fullPath) != 0)
+            {
+                result = -1;
+                continue;
+            }
+
+            if (rmdir(fullPath) != 0)
             {
                 perror("rmdir");
+                result = -1;
             }
         }
         else
         {
-            // Remove file (also handles symbolic links)
-            if (unlink(full_path) == -1)
+            if (unlink(fullPath) != 0)
             {
                 perror("unlink");
+                result = -1;
             }
         }
     }
 
-    closedir(dir);
+    if (closedir(pDir) != 0)
+    {
+        perror(cErrCloseDir);
+        result = -1;
+    }
+
+    return result;
 }
 
-void ChangeToDir (char const* const path){
-   if(chdir(path) != 0)
-   {
-      perror(cErrChangeDir);
-      exit(EXIT_FAILURE);
-   }
-}
 
-void PrintDir(){
-   char* dirName = ".";  //current working direktory
-
-
-   //explizites Ruecksetzten der errno-Variable vor einem Systemaufruf
-   errno = 0;
-
-   //Verzeichnis oeffnen
-   DIR* pDir = opendir(dirName);
-   if (pDir == nullptr)
-   {
-      perror(cErrOpenDir);
-   }
-
-   //lesen der einzelnen Eintraege
-   errno = 0;
-   struct dirent* pDirEntry = nullptr;
-   while ((pDirEntry = readdir(pDir)) != nullptr)
-   {
-      switch (pDirEntry->d_type)
-      {
-         case DT_REG:
-            printf("file:  ");
-            break;
-         case DT_DIR:
-            printf("dir:   ");
-            break;
-         default:
-            printf("other: ");
-            break;
-      }
-      printf("%20s [inode: %8ld] [len: %d]\n", pDirEntry->d_name, 
-                                               (long)pDirEntry->d_ino, 
-                                               pDirEntry->d_reclen);
-   }
-
-   //es koennte auch ein Lesefehler passiert sein -> errno pruefen
-   if (errno != 0)
-   {
-      perror(cErrReadDir);
-      errno = 0;
-      closedir(pDir);
-   }
-
-   //Verzeichnis schliessen
-   if (closedir(pDir) != 0)
-   {
-      perror(cErrCloseDir);
-   }
-}
-
-void AddDir (char const* const name){
-   if(mkdir(name, cDefaultAccessRights) != 0)
-   {
-      perror(cErrAddDir);
-      exit(EXIT_FAILURE);
-   }
-}
-
-void AddFile (char const* const name){
-   FILE* pFile = fopen(name, "w");
-   if(pFile == nullptr)
-   {
-      perror(cErrAddFile);
-      exit(EXIT_FAILURE);
-   }
-   fclose(pFile);
-}
-
-void RemoveAll(){
-   //to do
-   remove_directory(".");
-}
-
-void SetAccessRights (mode_t const mode) {
-   cDefaultAccessRights = mode;
+void SetAccessRights(mode_t const mode)
+{
+    cDefaultAccessRights = mode;
 }
