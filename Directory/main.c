@@ -40,7 +40,7 @@ int main(void)
 
     chdir(testDir);
 
-    printf("\n--- Directory Module Tests ---\n\n");
+    printf("--- Directory Module Tests ---\n\n");
 
     // Directory and file creation
     AddDir("test_dir");
