@@ -11,9 +11,9 @@
 //Fehlerkonstanten und -texte
 static short const SEL_OK = 1;
 static short const SEL_NOK = 0;
-static short const GREATER = 1;
+s//tatic short const GREATER = 1;
 static short const EQUAL = 0;
-static short const LESS = -1;
+//static short const LESS = -1;
 
 static char const* const cUsageCmd = "usage: scandir [directory]\n";
 static char const* const cErrScanDir = "error in scandir";
