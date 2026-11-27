@@ -6,6 +6,8 @@
 #include <errno.h>
 #include <assert.h>
 
+// valgrind --leak-check=full ./ScanDir /home
+
 //Fehlerkonstanten und -texte
 static short const SEL_OK = 1;
 static short const SEL_NOK = 0;
@@ -24,6 +26,11 @@ static int Select(struct dirent const* dir)
    assert(dir != 0);
 
    //to do #2
+   if(strcmp(dir->d_name, ".") == EQUAL || strcmp(dir->d_name, "..") == EQUAL)
+   {
+      return SEL_NOK;
+   }
+   return SEL_OK;
 }
 
 
@@ -71,7 +78,29 @@ int main (int argc, char **argv)
    struct dirent **namelist = 0;
 
    //to do #1
+   // Variante 1
+   //int numOfEntries = scandir(dirName, &namelist, nullptr, alphasort);
 
+   // Variante 2 -> mit function pointer auf 'Select'
+   int numOfEntries = scandir(dirName, &namelist, Select, alphasort);
+   if(errno){
+      perror(cErrScanDir);
+      return EXIT_FAILURE;
+   }
+
+   printf("Anzahl der Eintraege: %s: %d\n", dirName, numOfEntries);
+
+   //Ausgabe der Eintraege
+   if(numOfEntries > 0)
+   {
+      puts("Die Eintraege:");
+      for(int i = 0; i < numOfEntries; ++i)
+      {
+         printf(" %s -> %ld\n", namelist[i]->d_name, namelist[i]->d_ino);
+         free(namelist[i]);
+      }
+      free(namelist);
+   }
 
    return EXIT_SUCCESS;
 }
